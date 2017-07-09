@@ -1,0 +1,39 @@
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<script src="../node_modules/redux/dist/redux.js"></script>
+<script>
+  // Setup a Redux store
+  const initial = {
+  };
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'GET_POSTS':
+        // ALWAYS return new state
+        console.log(action.posts)
+        return Object.assign({}, state, {
+          posts: action.posts // New message
+        });
+      case 'POST_POSTS':
+        // ALWAYS return new state
+        console.log(action.postsPostId)
+        return Object.assign({}, state, {
+          postsPostId: action.postsPostId.id // New message
+        });
+
+      case 'RUN_REQUEST':
+        // ALWAYS return new state
+        console.log(action.runRequestPost)
+        return Object.assign({}, state, {
+          optionsRunRequest: action.optionsRunRequest // New message
+        });
+
+      // Return the state, nothing changed.
+      default:
+        return state;
+    }
+  };
+  const store = Redux.createStore(reducer, initial);
+
+  // Export the ReduxMixin
+  ReduxMixin = PolymerRedux(store);
+
+</script>

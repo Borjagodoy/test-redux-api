@@ -1,0 +1,97 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="redux-mixin.html">
+
+
+<dom-module id="my-data-manager">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        padding: 10px;
+      }
+    </style>
+
+
+   <iron-ajax
+      id="POSTPosts"
+      url="http://jsonplaceholder.typicode.com/posts"
+      method="POST"
+      body='{{bodyPost}}'
+      handle-as="json"
+      on-response="POST_posts"></iron-ajax>
+
+      <iron-ajax
+         id="GETPosts"
+         url="http://jsonplaceholder.typicode.com/posts"
+         handle-as="json"
+         on-response="getPosts"></iron-ajax>
+
+
+  </template>
+
+  <script>
+    class MydataManager extends ReduxMixin(Polymer.Element) {
+      static get is() {
+        return 'my-data-manager';
+      }
+      static get properties() {
+        return {
+          postPosts: {
+            type: String,
+            statePath: 'postPosts'
+          },
+          posts: {
+            type: String,
+            statePath: 'posts'
+          },
+          runRequest:{
+            type: Object,
+            statePath: 'optionsRunRequest',
+            observer: 'sendRequest'
+          },
+          bodyPost:Object
+        };
+      }
+
+      sendRequest() {
+          if(this.runRequest && this.runRequest.method){
+          const method = this.runRequest.method || 'GET';
+          const entity = this.runRequest.entity || ''
+          const ajax = this.$[`${method}${entity}`];
+          if(method !== 'GET'){
+            this.set('bodyPost', JSON.stringify(this.runRequest.body));
+          }
+          ajax.generateRequest();
+        }
+      }
+      getPosts() {
+        console.log('get')
+        this.dispatch({
+          type: 'GET_POSTS',
+          posts: this.$.GETPosts.lastResponse,
+        });
+      }
+      POST_posts() {
+        this.dispatch({
+          type: 'POST_POSTS',
+          postsPostId: this.$.POSTPosts.lastResponse.id,
+        });
+        this.getPosts();
+      }
+    }
+
+    window.customElements.define(MydataManager.is, MydataManager);
+  </script>
+</dom-module>

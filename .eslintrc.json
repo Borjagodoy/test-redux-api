@@ -1,0 +1,23 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "airbnb-base"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 6
+    },
+    "env": {
+        "browser": true
+    },
+    "plugins": [
+        "html"
+    ],
+    "rules": {
+        "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }],
+        "max-len": ["warn", 140],
+        "class-methods-use-this": ["off"]
+    },
+    "globals": {
+        "Polymer": true
+    }
+}
